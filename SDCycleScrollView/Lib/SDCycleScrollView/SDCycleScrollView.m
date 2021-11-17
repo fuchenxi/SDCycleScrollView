@@ -40,11 +40,26 @@
 
 NSString * const ID = @"SDCycleScrollViewCell";
 
+@interface SDCollectionViewFlowLayout : UICollectionViewFlowLayout
+
+@property (nonatomic, assign) BOOL isRTL;
+
+@end
+
+@implementation SDCollectionViewFlowLayout
+
+- (BOOL)flipsHorizontallyInOppositeLayoutDirection {
+    
+    return self.isRTL ? YES : NO;
+}
+
+@end
+
 @interface SDCycleScrollView () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 
 @property (nonatomic, weak) UICollectionView *mainView; // 显示图片的collectionView
-@property (nonatomic, weak) UICollectionViewFlowLayout *flowLayout;
+@property (nonatomic, weak) SDCollectionViewFlowLayout *flowLayout;
 @property (nonatomic, strong) NSArray *imagePathsGroup;
 @property (nonatomic, weak) NSTimer *timer;
 @property (nonatomic, assign) NSInteger totalItemsCount;
@@ -131,7 +146,7 @@ NSString * const ID = @"SDCycleScrollViewCell";
 // 设置显示图片的collectionView
 - (void)setupMainView
 {
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    SDCollectionViewFlowLayout *flowLayout = [[SDCollectionViewFlowLayout alloc] init];
     flowLayout.minimumLineSpacing = 0;
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     _flowLayout = flowLayout;
@@ -362,6 +377,14 @@ NSString * const ID = @"SDCycleScrollViewCell";
     }
 }
 
+- (void)setIsRTL:(BOOL)isRTL {
+    
+    _isRTL = isRTL;
+    
+    self.flowLayout.isRTL = isRTL;
+}
+
+
 #pragma mark - actions
 
 - (void)setupTimer
@@ -467,7 +490,11 @@ NSString * const ID = @"SDCycleScrollViewCell";
 
 - (int)pageControlIndexWithCurrentCellIndex:(NSInteger)index
 {
-    return (int)index % self.imagePathsGroup.count;
+    if (self.isRTL) {
+        return (int)self.imagePathsGroup.count - (int)index % self.imagePathsGroup.count;
+    } else {
+        return (int)index % self.imagePathsGroup.count;
+    }
 }
 
 - (void)clearCache

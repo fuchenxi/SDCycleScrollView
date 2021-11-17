@@ -196,6 +196,9 @@ typedef enum {
 /** 轮播文字label对齐方式 */
 @property (nonatomic, assign) NSTextAlignment titleLabelTextAlignment;
 
+/// 是否是 Right to left 布局
+@property (nonatomic, assign) BOOL isRTL;
+
 /** 滚动手势禁用（文字轮播较实用） */
 - (void)disableScrollGesture;
 
